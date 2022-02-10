@@ -1,51 +1,66 @@
-// handle deposite button event
-document.getElementById('deposite-submit').addEventListener('click', function(){
-    //getting deposite amount
-    const depositeInput = document.getElementById('deposite-amount');
-    const newDepositeAmountText = depositeInput.value;
-    const newDepositeAmount = parseFloat(newDepositeAmountText);
+// common function for input value processing
+function getInputValue(inputId) {
+    const inputField = document.getElementById(inputId);
+    const inputAmountText = inputField.value;
+    const amountValue = parseFloat(inputAmountText);
 
-    // updating desposite amount
-    const depositeTotal = document.getElementById('deposite-total');
-    const previousDepositeText = depositeTotal.innerText;
-    const previousDeposite = parseFloat(previousDepositeText);
-    const newDepositeTotal = previousDeposite + newDepositeAmount;
-    depositeTotal.innerText = newDepositeTotal;
+    // clearing input field
+    inputField.value = '';
+    return amountValue;
+}
 
-    // update current balance
+// common function to get current balance
+function getCurrentBalance(){
     const currentBalanceAmount = document.getElementById('current-balance');
     const currentBalanceText = currentBalanceAmount.innerText;
     const previousCurrentBalance = parseFloat(currentBalanceText);
-    const newCurrentBalance = previousCurrentBalance + newDepositeAmount;
-    currentBalanceAmount.innerText = newCurrentBalance;
+    return previousCurrentBalance;
+}
 
-    // clear deposite input field
-    depositeInput.value = '';
+// calculate and update total deposite and withdraw
+function updateTotalField(totalField, inputAmount){
+    const totalElement = document.getElementById(totalField);
+    const totalText = totalElement.innerText;
+    const previousTotal = parseFloat(totalText);
+    const newTotal = previousTotal+inputAmount;
+    const balanceAmount = document.getElementById(totalField);
+    balanceAmount.innerText = newTotal;
+}
+
+//  set current balance after deposite and withdraw
+function setBalance(amount){
+    const balanceAmount = document.getElementById('current-balance');
+    balanceAmount.innerText = amount;
+}
+
+// handle deposite button event
+document.getElementById('deposite-submit').addEventListener('click', function(){
+    //getting deposite amount
+    const depositeInput = getInputValue('deposite-amount');
+
+    // updating desposite amount
+    updateTotalField('deposite-total', depositeInput);
+
+    // update current balance
+    const currentBalance = getCurrentBalance();
+    const newCurrentBalance = currentBalance + depositeInput;
+    setBalance(newCurrentBalance);
+
 })
 
 // handle withdraw button event
 document.getElementById('withdraw-submit').addEventListener('click', function(){
     //getting withdraw amount
-    const withdrawInput = document.getElementById('withdraw-amount');
-    const newWithdrawAmountText = withdrawInput.value;
-    const newWithdrawAmount = parseFloat(newWithdrawAmountText);
+    const withdrawInput = getInputValue('withdraw-amount');
 
     // updating withdraw amount
-    const withdrawTotal = document.getElementById('withdraw-total');
-    const previousWithdrawText = withdrawTotal.innerText;
-    const previousDeposite = parseFloat(previousWithdrawText);
-    const newWithdrawTotal = previousDeposite + newWithdrawAmount;
-    withdrawTotal.innerText = newWithdrawTotal;
+    updateTotalField('withdraw-total', withdrawInput);
 
     // update current balance
-    const currentBalanceAmount = document.getElementById('current-balance');
-    const currentBalanceText = currentBalanceAmount.innerText;
-    const previousCurrentBalance = parseFloat(currentBalanceText);
-    const newCurrentBalance = previousCurrentBalance - newWithdrawAmount;
-    currentBalanceAmount.innerText = newCurrentBalance;
+    const currentBalance = getCurrentBalance();
+    const newCurrentBalance = currentBalance - withdrawInput;
+    setBalance(newCurrentBalance);
 
-    // clear deposite input field
-    withdrawInput.value = '';
 })
 
 // logout function
